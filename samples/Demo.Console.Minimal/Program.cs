@@ -3,9 +3,9 @@ using Microsoft.Extensions.Hosting;
 using PnP.Core.Auth.Services.Builder.Configuration;
 using PnP.Core.Services;
 
-string clientId = "<YourClientId>";
-string tenantId = "<YourTenantId>";
-string siteUrl = "<YourSiteUrl>";
+string clientId = "9a3fb942-de21-4464-91c7-e500226b9e45";
+string tenantId = "2942bb31-1d49-4da6-8d3d-d0f9e1141486";
+string siteUrl = "https://tenanttocheck.sharepoint.com/sites/PnPCoreSdkPlayGround";
 
 // Creates and configures the host
 var host = Host.CreateDefaultBuilder()

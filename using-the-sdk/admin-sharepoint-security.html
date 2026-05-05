@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Security | PnP Core SDK </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Security | PnP Core SDK ">
+    <meta name="generator" content="docfx ">
+  <meta name="description" content="The PnP Core SDK is a modern .NET SDK designed to work for Microsoft 365. It provides a unified object model for working with SharePoint Online and Teams which is agnostic to the underlying API&#39;s being called.">
+    <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
+    <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  <meta property="docfx:rel" content="../">
+  <meta property="docfx:newtab" content="true">
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <label class="glyphicon glyphicon-search" for="search-query"></label>
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+                
+                  <div class="contribution-panel mobile-hide pull-right">
+                      <a href="https://github.com/Adam-it/pnpcore/blob/dev/docs/using-the-sdk/admin-sharepoint-security.md/#L1" title="Edit this page" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                  </div>
+  <h1 id="security">Security</h1>
+
+<p>The Core SDK Admin library provides SharePoint Admin security related APIs like listing the SharePoint Tenant admins and more.</p>
+<h2 id="creating-context">Creating Context</h2>
+<p>In this article, you'll see a lot of <code>context</code> use: in this case this is a <code>PnPContext</code> which was obtained via the <code>PnPContextFactory</code> as explained in the <a href="readme.html">overview article</a> and shown below:</p>
+<pre><code class="lang-csharp">using (var context = await pnpContextFactory.CreateAsync(&quot;SiteToWorkWith&quot;))
+{
+    // See next chapter on how to use the PnPContext for doing SharePoint admin operations
+}
+</code></pre>
+<h2 id="pnpcoreadmin-dependency">PnP.Core.Admin dependency</h2>
+<p>The functionality shown in this article depends on the <a href="https://www.nuget.org/packages/PnP.Core.Admin">PnP.Core.Admin nuget package</a>. Once the PnP.Core.Admin nuget package has been installed you can get to the SharePoint admin features via using the <code>GetSharePointAdmin</code>, <code>GetSiteCollectionAppManager</code>, <code>GetTenantAppManager</code> and <code>GetSiteCollectionManager</code> extension methods:</p>
+<pre><code class="lang-csharp">using (var context = await pnpContextFactory.CreateAsync(&quot;SiteToWorkWith&quot;))
+{
+    // Use the GetSharePointAdmin extension method on any PnPContext 
+    // to tap into the SharePoint admin features
+    var url = context.GetSharePointAdmin().GetTenantAdminCenterUri();
+}
+</code></pre>
+<h2 id="is-the-current-user-a-sharepoint-tenant-administrator">Is the current user a SharePoint tenant administrator?</h2>
+<p>If the code you want to run requires SharePoint tenant administrator privileges then you can use the <code>IsCurrentUserSharePointAdmin</code> methods to verify.</p>
+<pre><code class="lang-csharp">// Checks if the current user is a SharePoint tenant admin
+if (await context.GetSharePointAdmin().IsCurrentUserTenantAdminAsync())
+{
+    // Do the admin operations
+}
+else
+{
+    // Handle non admin scenario
+}
+</code></pre>
+<h2 id="getting-the-sharepoint-tenant-administrators">Getting the SharePoint tenant administrators</h2>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>You need to be either a SharePoint Administrator or Global Administrator to use these methods.</p>
+</div>
+
+<p>If you need to list all the SharePoint admins use the <code>GetTenantAdmins</code> methods which will return a <code>ISharePointUser</code> instance for each admin user.</p>
+<pre><code class="lang-csharp">// Get the tenant admins
+var admins = await context.GetSharePointAdmin().GetTenantAdminsAsync();
+
+foreach(var admin in admins)
+{
+    // Do something with the admin user
+}
+</code></pre>
+<h2 id="getting-the-administrators-of-a-site-collection">Getting the administrators of a site collection</h2>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>You need to be either a SharePoint Administrator or Global Administrator to use these methods.</p>
+</div>
+
+<p>To get the administrators of a given site collection use the <code>GetSiteCollectionAdmins</code> methods. You do not have to have access to the site collection to enumerate it's administrators as these methods depend on tenant APIs that only work for SharePoint administrators. When getting the administrators you'll see a difference between Microsoft 365 group connected site collections and the other site collections:</p>
+<ul>
+<li>For Microsoft 365 group connected site collections the Microsoft 365 group owners are included, they have the <code>IsMicrosoft365GroupOwner</code> property set to <code>true</code>. These users don't have the <code>LoginName</code> property set, instead the <code>Id</code> property is set</li>
+<li>For the other site collections the returned users all have the <code>LoginName</code> property set, the <code>Id</code> property is not set. Also one of the admins is marked as <code>IsSecondaryAdmin == false</code>, that one administrator is the primary site collection administrator</li>
+</ul>
+<pre><code class="lang-csharp">// Get the site collection admins
+var admins = await context.GetSiteCollectionManager().GetSiteCollectionAdminsAsync(new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;));
+
+foreach(var admin in admins)
+{
+    // Do something with the site collection admin user
+}
+</code></pre>
+<h2 id="setting-the-administrators-of-a-site-collection">Setting the administrators of a site collection</h2>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>You need to be either a SharePoint Administrator or Global Administrator to use these methods.</p>
+</div>
+
+<p>To set the administrators of a given site collection use the <code>SetSiteCollectionAdmins</code> methods. You do not have to have access to the site collection to set it's administrators as these methods depend on tenant APIs that only work for SharePoint administrators. When setting the administrators you'll see a difference between Microsoft 365 group connected site collections and the other site collections:</p>
+<ul>
+<li>For the other site collections you provide a list of login names (e.g. <code>i:0#.f|membership|anna@contoso.onmicrosoft.com</code> or <code>c:0-.f|rolemanager|spo-grid-all-users/6492ece7-7f5d-4499-8130-50e761e25bd9</code>). The first one of the list will be set as the primary site collection administrator, the others will be set as secondary site collection administrators.</li>
+<li>For Microsoft 365 group connected site collections you do have the same option as for the other site collections with the difference that the primary site collection administrator of group connected sites is never updated. Next to that you can also specify the Azure AD user id's of users you want to grant site collection admin permissions by adding them to the Microsoft 365 group's owners. To stay in sync with what SharePoint Tenant admin center does, when adding a Microsoft 365 group owner the user is also added as a Microsoft 365 group member.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>SetSiteCollectionAdmins</code> methods will not remove existing site collection admins, only add new site collection admins.</p>
+</div>
+<pre><code class="lang-csharp">// Set the site collection admins for a regular site
+List&lt;string&gt; newAdmins = new List&lt;string&gt;();
+newAdmins.Add(&quot;i:0#.f|membership|anna@contoso.onmicrosoft.com&quot;);
+newAdmins.Add(&quot;c:0-.f|rolemanager|spo-grid-all-users/6492ece7-7f5d-4499-8130-50e761e25bd9&quot;);
+context.GetSiteCollectionManager().SetSiteCollectionAdmins(new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;), newAdmins);
+
+// Set the site collection admins for a Microsoft 365 group connected site
+List&lt;Guid&gt; newGroupOwners = new List&lt;Guid&gt;();
+newGroupOwners.Add(Guid.Parse(&quot;3d25e9c4-b20f-443b-ab4d-8ab0668f72ee&quot;));
+
+context.GetSiteCollectionManager().SetSiteCollectionAdmins(new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;), newGroupOwners);
+</code></pre>
+<p>By default <code>SetSiteCollectionAdmins</code> adds <code>newAdmins</code> to the list of existing site collection admins. By setting the optional <code>CollectionUpdateOptions</code> parameter to <code>SetExact</code> the <code>newAdmins</code> list will be set exactly and all other admins
+will be removed.</p>
+<pre><code class="lang-csharp">// Set the site collection admins for a regular site
+List&lt;string&gt; newAdmins = new List&lt;string&gt;();
+newAdmins.Add(&quot;i:0#.f|membership|anna@contoso.onmicrosoft.com&quot;);
+newAdmins.Add(&quot;c:0-.f|rolemanager|spo-grid-all-users/6492ece7-7f5d-4499-8130-50e761e25bd9&quot;);
+
+context.GetSiteCollectionManager().SetSiteCollectionAdmins(
+           new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;), 
+           newAdmins,
+           null,
+           CollectionUpdateOptions.SetExact
+         );
+</code></pre>
+<p>A certain <code>ISiteCollectionAdmin</code> can be set as primary site collection administrator using <code>SetAsPrimarySiteCollectionAdministrator</code>:</p>
+<pre><code class="lang-csharp">// Get admins
+List&lt;ISiteCollectionAdmin&gt; admins = context
+      .GetSiteCollectionManager()
+      .GetSiteCollectionAdmins(new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;));
+
+// Set the first as primary site collection administrator
+admins.First()
+      .SetAsPrimarySiteCollectionAdministratorAsync(new Uri(&quot;https://contoso.sharepoint.com/sites/somesite&quot;));
+
+</code></pre>
+
+</article>
+          </div>
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              </nav>
+            </div>
+          </div>        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
+      
+            <img src="https://m365-visitor-stats.azurewebsites.net/pnpcoresdk/docs" alt="spacer">
+          </div>
+        </div>
+      </footer>    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>  </body>
+</html>

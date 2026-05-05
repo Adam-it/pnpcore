@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring site security | PnP Core SDK </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring site security | PnP Core SDK ">
+    <meta name="generator" content="docfx ">
+  <meta name="description" content="The PnP Core SDK is a modern .NET SDK designed to work for Microsoft 365. It provides a unified object model for working with SharePoint Online and Teams which is agnostic to the underlying API&#39;s being called.">
+    <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
+    <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  <meta property="docfx:rel" content="../">
+  <meta property="docfx:newtab" content="true">
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <label class="glyphicon glyphicon-search" for="search-query"></label>
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+                
+                  <div class="contribution-panel mobile-hide pull-right">
+                      <a href="https://github.com/Adam-it/pnpcore/blob/dev/docs/using-the-sdk/security-intro.md/#L1" title="Edit this page" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                  </div>
+  <h1 id="configuring-site-security">Configuring site security</h1>
+
+<p>In SharePoint the definition of what a user or group can do on a securable object (Web, List, ListItem) is defined as a role (a.k.a. permission level). For example the role &quot;Full Control&quot; has many permissions like &quot;Manage Lists&quot;, &quot;View Items&quot; and more. The default <strong>owners</strong> group of a site has the &quot;Full Control&quot; role granting all users and groups part of the <strong>owners</strong> group the related permissions like &quot;Manage Lists&quot;, &quot;View Items&quot; and more. Roles are always managed at the root web level, meaning there's only one set of roles defined per site collection.</p>
+<p>By default securable objects inherit permissions: the permissions set on the site are inherited by each list and the are again inherited by each list item. If a user is then added to the site's contributors group he immediately has the &quot;Full Control&quot; role on all of the content in the site. However, sometimes it's need to provide other permissions for a sub site, for a list or for a list item which is implemented by breaking the permission inheritance for the securable object followed by setting the correct permissions on the securable object.</p>
+<p>In the remainder of this article you'll see a lot of <code>context</code> use: in this case this is a <code>PnPContext</code> which was obtained via the <code>PnPContextFactory</code> as explained in the <a href="readme.html">overview article</a> and show below:</p>
+<pre><code class="lang-csharp">using (var context = await pnpContextFactory.CreateAsync(&quot;SiteToWorkWith&quot;))
+{
+    // See next chapter on how to use the PnPContext for working with lists
+}
+</code></pre>
+<h2 id="configuring-roles">Configuring roles</h2>
+<h3 id="listing-the-existing-roles">Listing the existing roles</h3>
+<p>To query the roles defined on the <code>IWeb</code> instance load the <code>RoleDefinitions</code> property on the root web of the site collection.</p>
+<pre><code class="lang-csharp">var roleDefinitions = (await context.Web.GetAsync(p =&gt; p.RoleDefinitions)).RoleDefinitions;
+foreach(role in roleDefinitions)
+{
+    // do something with the role
+    // Typical roles are &quot;Full Control&quot;, &quot;Edit&quot;, &quot;Contribute&quot;, ...
+}
+</code></pre>
+<h3 id="understanding-if-a-role-has-a-permission">Understanding if a role has a permission</h3>
+<p>To verify if a role has a given permission level you can use</p>
+<pre><code class="lang-csharp">// Context is a root web context
+var roleDefinition = await context.Web.RoleDefinitions.FirstOrDefaultAsync(d =&gt; d.Name == &quot;Full Control&quot;);
+if (roleDefinition.BasePermissions.Has(PermissionKind.ViewPages))
+{
+    // The &quot;Full Control&quot; role has the &quot;View Pages&quot; permission
+}
+</code></pre>
+<h3 id="adding-a-custom-role">Adding a custom role</h3>
+<p>If the default roles and their associated permissions do not fit your needs you can create a new role.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>It's not recommended to change the out of the box provided roles.</p>
+</div>
+<pre><code class="lang-csharp">// Load the roles, context is a root web context
+var roleDefinitions = (await context.Web.GetAsync(p =&gt; p.RoleDefinitions)).RoleDefinitions;
+// Add a custom role
+var customRole = await roleDefinitions.AddAsync(&quot;My custom role&quot;, 
+                                                RoleType.None, 
+                                                new PermissionKind[] 
+                                                { 
+                                                    PermissionKind.ViewPages, 
+                                                    PermissionKind.ViewListItems 
+                                                }, 
+                                                &quot;Limited viewing only&quot;);
+</code></pre>
+<h3 id="updating-a-role">Updating a role</h3>
+<p>A role can also be updated, simply call one of the <code>Update</code> methods after having changed the role. The change the permissions a role has use the <code>Clear</code> and <code>Set</code> methods on the <code>BasePermissions</code> property:</p>
+<pre><code class="lang-csharp">var customRole = await context.Web.RoleDefinitions.FirstOrDefaultAsync(d =&gt; d.Name == &quot;My custom role&quot;);
+
+customRole.BasePermissions.Clear(PermissionKind.ViewPages);
+customRole.BasePermissions.Set(PermissionKind.AddListItems);
+customRole.Description = &quot;Custom role&quot;;
+// Send update to server
+await customRole.UpdateAsync();
+</code></pre>
+<h3 id="deleting-a-role">Deleting a role</h3>
+<p>Deleting a role can be done via the <code>Delete</code> methods:</p>
+<pre><code class="lang-csharp">var customRole = await context.Web.RoleDefinitions.FirstOrDefaultAsync(d =&gt; d.Name == &quot;My custom role&quot;);
+// Delete the role
+await customRole.DeleteAsync();
+</code></pre>
+<h2 id="assigning-roles">Assigning roles</h2>
+<p>To actually grant a permission a role needs to be assigned to a user or group. By default the groups and user and their assigned roles are maintained at the root web level and you can directly grant roles via the user and group models, which is explained in the respective <a href="security-groups.html">Groups</a> and <a href="security-users.html">Users</a> pages. It's however also possible to break permission inheritance and have different permissions at sub web, list or list item level. In PnP Core SDK the three objects that can be secured (<code>IWeb</code>, <code>IList</code> and <code>IListItem</code>) all implement the <code>ISecurableObject</code> interface providing the needed properties and methods to configure security.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The below chapters use an <code>IList</code> as sample but they apply to either <code>IWeb</code>, <code>IList</code> and <code>IListItem</code>.</p>
+</div>
+<h3 id="breaking-permission-inheritance">Breaking permission inheritance</h3>
+<p>By default permissions are inherited, so each securable object inherits from it's securable object parent. If you want to configure different permissions for let's say an <code>IList</code> then you need to first break permission inheritance using one of the <code>BreakRoleInheritance</code> methods. Using the first method parameter <code>copyRoleAssignments</code> can opt to copy over the current permissions so that you can edit them later on. If set to <code>false</code> then no permissions are copied over. The second parameter <code>clearSubscopes</code> determines what will happen with the existing custom permissions: imagine the scenario where that a list in a sub has custom permissions set and then the custom permissions are defined on the web which is the list's <code>ISecurableObject</code> parent. When <code>clearSubscopes</code> is set to <code>true</code> then existing custom permissions on securable child objects are dropped in favor of the current one, if set to <code>false</code> the existing custom permissions are left as is.</p>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+// Break permission inheritance
+await myList.BreakRoleInheritanceAsync(false, true);
+</code></pre>
+<h3 id="restoring-permission-inheritance">Restoring permission inheritance</h3>
+<p>If a securable object again needs to inherit the permissions from it's securable parent object then use one of the <code>ResetRoleInheritance</code> methods.</p>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+// Reset permission inheritance
+await myList.ResetRoleInheritanceAsync();
+</code></pre>
+<h3 id="listing-the-current-roles-a-user-or-group-has-on-a-securable-object">Listing the current roles a user or group has on a securable object</h3>
+<p>To get a list of the currently assigned roles for a securable object use the <code>GetRoleDefinitions</code> methods. Simply pass in the id of principal (= user or group) you want to get the roles for.</p>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+// Load the role assignments on this list, also load the role definitions
+await myList.LoadAsync(w =&gt; w.RoleAssignments.QueryProperties(p =&gt; p.RoleDefinitions));
+
+foreach (var roleAssignment in myList.RoleAssignments.AsRequested())
+{
+    // do something with the role assignment
+}
+</code></pre>
+<h3 id="checking-if-custom-permissions-are-defined">Checking if custom permissions are defined</h3>
+<p>Checking if a securable object has custom role assignments is done via the <code>HasUniqueRoleAssignments</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>When loading data you can apply a filter (via the <code>where()</code> LINQ operator) and you can filter on <code>HasUniqueRoleAssignments == true</code> when querying webs and lists, however this is not possible when querying list items.</p>
+</div>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+// Load the role assignments on this list, also load the role definitions
+await myList.LoadAsync(w =&gt; w.HasUniqueRoleAssignments);
+
+if (myList.HasUniqueRoleAssignments)
+{
+    // List has custom permissions set, let's reset them
+    await myList.ResetRoleInheritanceAsync();
+}
+</code></pre>
+<h3 id="assigning-roles-to-a-user-or-group">Assigning roles to a user or group</h3>
+<p>Once you've broken permissions inheritance you will often assign roles for one or more users and groups to the securable object. To do so there are approaches: doing a bulk role assignment via the <code>AddRoleDefinitions</code> methods or assigning one role via the <code>AddRoleDefinition</code> methods. Both are shown in below example.</p>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+
+// Get current user
+var currentUser = await context.Web.GetCurrentUserAsync();
+
+// Approach A: adding single role to the current user
+var roleDefinitions = (await context.Web.GetAsync(p =&gt; p.RoleDefinitions)).RoleDefinitions;
+var editRole = roleDefinitions.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;Edit&quot;);
+
+await myList.AddRoleDefinitionAsync(currentUser.Id, editRole);
+
+// Approach B: adding multiple roles at once
+await myList.AddRoleDefinitionsAsync(currentUser.Id, new string[] { &quot;Full Control&quot;, &quot;Edit&quot; });
+</code></pre>
+<h3 id="removing-roles-from-a-user-or-group">Removing roles from a user or group</h3>
+<p>Just like adding roles there's also options for removing roles from a user or group for a securable object: doing a bulk role removal via the <code>RemoveRoleDefinitions</code> methods or removing one role via the <code>RemoveRoleDefinition</code> methods. Both are shown in below example.</p>
+<pre><code class="lang-csharp">var myList = await context.Web.Lists.GetByTitleAsync(&quot;mylist&quot;);
+
+// Get current user
+var currentUser = await context.Web.GetCurrentUserAsync();
+
+// Approach A: remove single role to the current user
+var roleDefinitions = (await context.Web.GetAsync(p =&gt; p.RoleDefinitions)).RoleDefinitions;
+var editRole = roleDefinitions.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;Edit&quot;);
+
+await myList.RemoveRoleDefinitionAsync(currentUser.Id, editRole);
+
+// Approach B: Removing multiple roles at once
+await myList.RemoveRoleDefinitionsAsync(currentUser.Id, new string[] { &quot;Full Control&quot;, &quot;Edit&quot; });
+</code></pre>
+
+</article>
+          </div>
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              </nav>
+            </div>
+          </div>        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
+      
+            <img src="https://m365-visitor-stats.azurewebsites.net/pnpcoresdk/docs" alt="spacer">
+          </div>
+        </div>
+      </footer>    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>  </body>
+</html>

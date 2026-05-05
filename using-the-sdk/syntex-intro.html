@@ -1,29 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html lang="en">
-  
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Working with SharePoint Syntex | PnP Core SDK </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Working with SharePoint Syntex | PnP Core SDK ">
-    <meta name="generator" content="docfx 2.56.5.0">
-    <meta name="description" content="The PnP Core SDK is an SDK designed to work against Microsoft 365. Its aim is to provide a unified object model to work with the whole Microsoft 365 ecosystem. ">
+    <meta name="generator" content="docfx ">
+  <meta name="description" content="The PnP Core SDK is a modern .NET SDK designed to work for Microsoft 365. It provides a unified object model for working with SharePoint Online and Teams which is agnostic to the underlying API&#39;s being called.">
     <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
-    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
     <link rel="stylesheet" href="../styles/docfx.css">
     <link rel="stylesheet" href="../styles/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    <meta property="docfx:newtab" content="true">
+  
+  <meta property="docfx:rel" content="../">
+  <meta property="docfx:newtab" content="true">
   </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../images/logo.svg" alt="">
               </a>
@@ -47,7 +47,7 @@
               </form>
             </div>
           </div>
-        </nav>        
+        </nav>
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -57,17 +57,17 @@
         </div>
       </header>
       <div class="container body-content">
-        
+
         <div id="search-results">
           <div class="search-list">Search Results for <span></span></div>
           <div class="sr-items">
             <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
           </div>
-          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
         </div>
       </div>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -77,16 +77,43 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
+                
                   <div class="contribution-panel mobile-hide pull-right">
-                      <a href="https://github.com/pnp/pnpcore/blob/dev/docs/using-the-sdk/syntex-intro.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                      <a href="https://github.com/Adam-it/pnpcore/blob/dev/docs/using-the-sdk/syntex-intro.md/#L1" title="Edit this page" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
                   </div>
-                    <h1 id="working-with-sharepoint-syntex">Working with SharePoint Syntex</h1>
+  <h1 id="working-with-sharepoint-syntex">Working with SharePoint Syntex</h1>
 
 <p><a href="https://www.microsoft.com/en-ww/microsoft-365/enterprise/sharepoint-syntex-overview">SharePoint Syntex</a> provides content services to capture and scale your expertise. <a href="https://www.microsoft.com/en-ww/microsoft-365/enterprise/sharepoint-syntex-overview">SharePoint Syntex</a> uses advanced AI and machine teaching to amplify human expertise, automate content processing, and transform content into knowledge. PnP Core SDK does provide support to help you with content models: you can list content models and deploy them inside your tenant using the provided support.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>PnP Core SDK uses the SharePoint Syntex REST APIs, checkout the <a href="https://docs.microsoft.com/en-us/microsoft-365/contentunderstanding/rest-api/syntex-model-rest-api">SharePoint Syntex document understanding model REST API article</a> for more details on them.</p>
+</div>
 <p>In the remainder of this article you'll see a lot of <code>context</code> use: in this case this is a <code>PnPContext</code> which was obtained via the <code>PnPContextFactory</code> as explained in the <a href="readme.html">overview article</a> and show below:</p>
 <pre><code class="lang-csharp">using (var context = await pnpContextFactory.CreateAsync(&quot;SiteToWorkWith&quot;))
 {
     // See next chapter on how to use the PnPContext for working with Syntex Models
+}
+</code></pre>
+<h2 id="checking-if-sharepoint-syntex-is-enabled-for-the-tenant">Checking if SharePoint Syntex is enabled for the tenant</h2>
+<p>SharePoint Syntex is an add-on to Microsoft 365 that has to be acquired separately, so you can't assume every tenant can use SharePoint Syntex. To check for the SharePoint Syntex enabled you can use the <code>IsSyntexEnabled</code> methods:</p>
+<pre><code class="lang-csharp">if (await context.Web.IsSyntexEnabledAsync())
+{
+    // Syntex is enabled
+}
+else
+{
+    // No Syntex :-(
+}
+</code></pre>
+<h2 id="checking-if-sharepoint-syntex-is-enabled-for-the-current-user">Checking if SharePoint Syntex is enabled for the current user</h2>
+<p>SharePoint Syntex is an add-on to Microsoft 365 that has to be acquired separately and licensed to users, so you can't assume every tenant user can use SharePoint Syntex. To check for the SharePoint Syntex enabled for the current user you can use the <code>IsSyntexEnabledForCurrentUser</code> methods:</p>
+<pre><code class="lang-csharp">if (await context.Web.IsSyntexEnabledForCurrentUserAsync())
+{
+    // SharePoint Syntex is enabled for the current user
+}
+else
+{
+    // No Syntex :-(
 }
 </code></pre>
 <h2 id="connecting-to-a-syntex-content-center-site">Connecting to a Syntex Content Center site</h2>
@@ -114,10 +141,10 @@ foreach(var model in models)
     // do something with the Syntex model
 }
 </code></pre>
-<h2 id="working-with-syntex-content-understanding-models">Working with Syntex Content understanding models</h2>
-<p>Once you've loaded a Syntex Content Center site you can work with the content understanding models defined in that Syntex Content Center site: you can publish a model to one or more libraries, you can unpublish a model from a library and you can list the libraries to which a model was published.</p>
+<h2 id="working-with-syntex-document-processing-models">Working with Syntex document processing models</h2>
+<p>Once you've loaded a Syntex Content Center site you can work with the document processing models defined in that Syntex Content Center site: you can publish a model to one or more libraries, you can unpublish a model from a library and you can list the libraries to which a model was published.</p>
 <h3 id="publishing-a-model-to-a-library">Publishing a model to a library</h3>
-<p>Syntex content understanding models extract metadata from unstructured content (documents) and therefore to use them you need to publish a model to a document library. Once the model is published to a document library and a new document is added to the library the model will process the added document and will populate the defined metadata. To publish a model via PnP Core SDK you do have several option you can chose to publish to a single library or to multiple libraries in one go. For both publish options you have the choice to provide either an <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.IList.html">IList</a> or to define <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.SyntexModelPublishOptions.html">SyntexModelPublishOptions</a> as shown in below code snippet.</p>
+<p>Syntex document processing models extract metadata from unstructured content (documents) and therefore to use them you need to publish a model to a document library. Once the model is published to a document library and a new document is added to the library the model will process the added document and will populate the defined metadata. To publish a model via PnP Core SDK you do have several option you can chose to publish to a single library or to multiple libraries in one go. For both publish options you have the choice to provide either an <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.IList.html">IList</a> or to define <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.SyntexModelPublishOptions.html">SyntexModelPublishOptions</a> as shown in below code snippet.</p>
 <pre><code class="lang-csharp">var cc = await context.Web.AsSyntexContentCenterAsync();
 var models = await cc.GetSyntexModelsAsync();
 // let's work with the first Syntex model
@@ -237,7 +264,11 @@ IFile testDocument = await context.Web.GetFileByServerRelativeUrlAsync(documentU
 var classifyAndExtractResult = await testDocument.ClassifyAndExtractAsync();
 </code></pre>
 <h3 id="classify-and-extract-all-files-in-a-library">Classify and extract all files in a library</h3>
-<p>When you've published a Syntex model to an existing library the files in that library are not automatically classified and extracted by that model, only newly added files will be classified and extracted. Previous chapter showed how you can trigger this for a single file, but you can also classify and extract all files in a library using the <code>ClassifyAndExtractAsync</code> method on the <code>IList</code>:</p>
+<p>When you've published a Syntex model to an existing library the files in that library are not automatically classified and extracted by that model, only newly added files will be classified and extracted. Previous chapter showed how you can trigger this for a single file, but you can also classify and extract all files in a library using the <code>ClassifyAndExtractAsync</code> method on the <code>IList</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>For libraries containing 5000 items or more it's strongly recommended to use the off peak SharePoint Syntex queue. See the <code>ClassifyAndExtractOffPeak</code> methods in the next chapter to learn how to use the off peak queue.</p>
+</div>
 <pre><code class="lang-csharp">// Get a reference to the list to be classified and extracted
 var invoices = await context.Web.Lists.GetByTitleAsync(&quot;Invoices&quot;);
 
@@ -248,6 +279,19 @@ var classifyAndExtractResults = await invoices.ClassifyAndExtractAsync();
 <h5>Note</h5>
 <p>You can set the optional <code>ClassifyAndExtractAsync</code> method parameter <code>force</code> to true to have all files in the library (again) classified and extracted.</p>
 </div>
+<h3 id="classify-and-extract-all-files-in-a-library-or-folder-using-the-off-peak-queue">Classify and extract all files in a library or folder using the off-peak queue</h3>
+<p>When you've published a Syntex model to an existing library the files in that library are not automatically classified and extracted by that model, only newly added files will be classified and extracted. Previous chapter showed how you can trigger this for a single file or for all files by enumerating all files and submitting them. For very large libraries enumerating files is time consuming and using the option to classify and extract the library during off-peak hours is better</p>
+<pre><code class="lang-csharp">// Get a reference to the list to be classified and extracted
+var invoices = await context.Web.Lists.GetByTitleAsync(&quot;Invoices&quot;, p =&gt; p.RootFolder);
+
+// Request classification and extraction for all files in the Invoices list that were never classified and extracted
+var classifyAndExtractResults = await invoices.ClassifyAndExtractOffPeakAsync();
+
+// Only request classification and extraction for all files in the folder named 2021/Q1/Jan
+var jan2021 = await invoices.RootFolder.EnsureFolderAsync(&quot;2021/Q1/Jan&quot;);
+var classifyAndExtractResultsForJan2021 = await jan2021.ClassifyAndExtractOffPeakAsync();
+</code></pre>
+
 </article>
           </div>
           <div class="hidden-sm col-md-2" role="complementary">
@@ -257,7 +301,7 @@ var classifyAndExtractResults = await invoices.ClassifyAndExtractAsync();
             </div>
           </div>        </div>
       </div>
-      
+
       <footer>
         <div class="grad-bottom"></div>
         <div class="footer">
@@ -265,14 +309,14 @@ var classifyAndExtractResults = await invoices.ClassifyAndExtractAsync();
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
-            
-            <img src="https://telemetry.sharepointpnp.com/@pnp.github.io/index/" alt="spacer">
+      <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
+      
+            <img src="https://m365-visitor-stats.azurewebsites.net/pnpcoresdk/docs" alt="spacer">
           </div>
         </div>
       </footer>    </div>
-    
-    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>  </body>
 </html>

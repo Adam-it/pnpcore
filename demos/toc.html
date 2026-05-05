@@ -1,33 +1,48 @@
-﻿
+
 <div id="sidetoggle">
   <div>
     <div class="sidefilter">
       <form class="toc-filter">
         <span class="glyphicon glyphicon-filter filter-icon"></span>
         <span class="glyphicon glyphicon-remove clear-icon" id="toc_filter_clear"></span>
-        <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+        <input type="text" id="toc_filter_input" placeholder="Filter by title" onkeypress="if(event.keyCode==13) {return false;}">
       </form>
     </div>
     <div class="sidetoc">
       <div class="toc" id="toc">
-          
+
           <ul class="nav level1">
                 <li>
                     <span class="expand-stub"></span>
                     <a href="README.html" name="" title="Overview of Samples">Overview of Samples</a>
-                    
+
                     <ul class="nav level2">
                           <li>
-                              <a href="Demo.ASPNetCore/README.html" name="" title="ASP.NET Core">ASP.NET Core</a>
+                              <a href="Demo.AzureFunction.OutOfProcess.AppOnly/readme.html" name="" title="Azure V4 Function">Azure V4 Function</a>
                           </li>
                           <li>
-                              <a href="Demo.AzureFunction/README.html" name="" title="Azure Function">Azure Function</a>
+                              <a href="Demo.AzFunction.ManagedIdentity/README.html" name="" title="Azure V4 Function using managed identity (in-process)">Azure V4 Function using managed identity (in-process)</a>
+                          </li>
+                          <li>
+                              <a href="Demo.AzFunction.ManagedIdentityV2/README.html" name="" title="Azure V4 Function using managed identity (isolated)">Azure V4 Function using managed identity (isolated)</a>
+                          </li>
+                          <li>
+                              <a href="Demo.AzureFunction/README.html" name="" title="Azure V3 Function">Azure V3 Function</a>
+                          </li>
+                          <li>
+                              <a href="Demo.ASPNetCore/README.html" name="" title="ASP.NET Core">ASP.NET Core</a>
                           </li>
                           <li>
                               <a href="Demo.Blazor/README.html" name="" title="Blazor App">Blazor App</a>
                           </li>
                           <li>
+                              <a href="Demo.Console.Minimal/readme.html" name="" title="Minimal Console App">Minimal Console App</a>
+                          </li>
+                          <li>
                               <a href="Demo.Console/README.html" name="" title="Console App">Console App</a>
+                          </li>
+                          <li>
+                              <a href="Demo.PersistentTokenCache/README.html" name="" title="Persistent token cache demo">Persistent token cache demo</a>
                           </li>
                           <li>
                               <a href="Demo.RPi/README.html" name="" title="Raspberry Pi">Raspberry Pi</a>

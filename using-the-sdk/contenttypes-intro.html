@@ -1,29 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html lang="en">
-  
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Working with content types | PnP Core SDK </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Working with content types | PnP Core SDK ">
-    <meta name="generator" content="docfx 2.56.5.0">
-    <meta name="description" content="The PnP Core SDK is an SDK designed to work against Microsoft 365. Its aim is to provide a unified object model to work with the whole Microsoft 365 ecosystem. ">
+    <meta name="generator" content="docfx ">
+  <meta name="description" content="The PnP Core SDK is a modern .NET SDK designed to work for Microsoft 365. It provides a unified object model for working with SharePoint Online and Teams which is agnostic to the underlying API&#39;s being called.">
     <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
-    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
     <link rel="stylesheet" href="../styles/docfx.css">
     <link rel="stylesheet" href="../styles/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    <meta property="docfx:newtab" content="true">
+  
+  <meta property="docfx:rel" content="../">
+  <meta property="docfx:newtab" content="true">
   </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../images/logo.svg" alt="">
               </a>
@@ -47,7 +47,7 @@
               </form>
             </div>
           </div>
-        </nav>        
+        </nav>
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -57,17 +57,17 @@
         </div>
       </header>
       <div class="container body-content">
-        
+
         <div id="search-results">
           <div class="search-list">Search Results for <span></span></div>
           <div class="sr-items">
             <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
           </div>
-          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
         </div>
       </div>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -77,12 +77,13 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
+                
                   <div class="contribution-panel mobile-hide pull-right">
-                      <a href="https://github.com/pnp/pnpcore/blob/dev/docs/using-the-sdk/contenttypes-intro.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                      <a href="https://github.com/Adam-it/pnpcore/blob/dev/docs/using-the-sdk/contenttypes-intro.md/#L1" title="Edit this page" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
                   </div>
-                    <h1 id="working-with-content-types">Working with content types</h1>
+  <h1 id="working-with-content-types">Working with content types</h1>
 
-<p>Each SharePoint site uses <a href="https://support.microsoft.com/en-us/office/documents-and-libraries-in-sharepoint-8284da52-9092-4b45-90e1-1b7de6311c38?ui=en-US&amp;rs=en-US&amp;ad=US#id0eaabaaa=content_types&amp;ID0EAACAAA=Content_types">content types</a>, a site comes pre-populated with a set of content types and a set of lists and libraries that use these content types. You can also create your own content types, either being a site content type or list content type. A site content type can be reused across multiple lists in the site collection and this is the preferred model, adding a list content type however is possible as well. Creating site and list content types is from a developer point of view quite similar so both options are discussed together in this article.</p>
+<p>Each SharePoint site uses <a href="https://support.microsoft.com/en-us/office/documents-and-libraries-in-sharepoint-8284da52-9092-4b45-90e1-1b7de6311c38?ui=en-US&amp;rs=en-US&amp;ad=US#id0eaabaaa=content_types&amp;ID0EAACAAA=Content_types">content types</a>, a site comes pre-populated with a set of content types and a set of lists and libraries that use these content types. You can also create your own content types, either being a site content type or list content type. A site content type can be reused across multiple lists in the site collection and this is the preferred model.</p>
 <p>In the remainder of this article you'll see a lot of <code>context</code> use: in this case this is a <code>PnPContext</code> which was obtained via the <code>PnPContextFactory</code> as explained in the <a href="readme.html">overview article</a> and show below:</p>
 <pre><code class="lang-csharp">using (var context = await pnpContextFactory.CreateAsync(&quot;SiteToWorkWith&quot;))
 {
@@ -123,18 +124,65 @@ await list.UpdateAsync();
 // Add the content type
 await list.ContentTypes.AddAsync(&quot;0x0100302EF0D1F1DB4C4EBF58251BCCF5968F&quot;, &quot;MyContentType&quot;);
 </code></pre>
-<h3 id="adding-fields-to-the-content-type">Adding fields to the content type</h3>
-<p>Once the content type is added you typically also want to add fields to it, this is done by adding the needed fields in the <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.IContentType.html#collapsible-PnP_Core_Model_SharePoint_IContentType_FieldLinks">content type's IFieldLinkCollection</a> via the <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.IFieldLinkCollection.html#collapsible-PnP_Core_Model_SharePoint_IFieldLinkCollection_Add_System_String_System_String_System_Boolean_System_Boolean_System_Boolean_System_Boolean_">AddAsync method</a>.</p>
+<h3 id="adding-site-fields-to-a-site-content-type">Adding site fields to a site content type</h3>
+<p>Once the content type is added you typically also want to add fields to it, this is done by adding the needed field links in the <a href="https://pnp.github.io/pnpcore/api/PnP.Core.Model.SharePoint.IContentType.html#collapsible-PnP_Core_Model_SharePoint_IContentType_FieldLinks">content type's IFieldLinkCollection</a> via the <code>AddAsync</code> methods.</p>
 <pre><code class="lang-csharp">// Get site content types, also load the content types field links in one go
-await context.Web.LoadAsync(p =&gt; p.ContentTypes.QueryProperties(p =&gt; p.Name, p =&gt; p.Description,
+await context.Web.LoadAsync(p =&gt; p.Fields, p =&gt; p.ContentTypes.QueryProperties(p =&gt; p.Name, p =&gt; p.Description,
                                     p =&gt; p.FieldLinks.QueryProperties(p =&gt; p.Name)));
-var contentTypes = context.Web.ContentTypes;
 
 // Get the content type to update
-var contentType = contentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+var contentType = context.Web.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
 
-// Add existing field with internal name &quot;MyField&quot; to the content type's field link collection
-await contentType.FieldLinks.AddAsync(&quot;MyField&quot;);
+// Get the field to add to the content type
+var field = context.Web.Fields.AsRequested().First(p =&gt; p.InternalName == &quot;myField&quot;);
+
+// Add existing field with internal name &quot;MyField&quot; to the content type's field link collection as a required field
+await contentType.FieldLinks.AddAsync(field, required: true);
+</code></pre>
+<h3 id="adding-fields-to-a-list-content-type">Adding fields to a list content type</h3>
+<p>Once a content type has been added to a list you can also add list fields to that content type, the flow is similar to adding site fields but this time the list field collection is queried.</p>
+<pre><code class="lang-csharp">// Add a list content type, start with getting a reference to the list
+var list = await context.Web.Lists.GetByTitleAsync(&quot;Documents&quot;, p =&gt; p.ContentTypes, p =&gt; p.Fields);
+
+// Get the content type to update
+var contentType = list.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+
+// Get the field to add to the content type
+var field = list.Fields.AsRequested().First(p =&gt; p.InternalName == &quot;myField&quot;);
+
+// Add existing field with internal name &quot;MyField&quot; to the content type's field link collection as a required field
+await contentType.FieldLinks.AddAsync(field, required: true);
+</code></pre>
+<h3 id="getting-and-setting-the-content-type-order-in-the-list-new-menu">Getting and setting the content type order in the list &quot;New&quot; menu</h3>
+<p>When you add content types to a list they're added as last content type in the &quot;New&quot; menu of the list. Sometimes you however want to have your custom content type(s) be the first ones and that can be done by getting the current content type order via one of the <code>GetContentTypeOrder</code> methods on <code>IList</code>. You'll get a list containing the content type id's in the current order, after reordering this list you can update the content type order via using the <code>ReorderContentTypes</code> methods on <code>IList</code>.</p>
+<pre><code class="lang-csharp">// Ensure content type are enabled for the list
+var myList = await context.Web.Lists.GetByTitleAsync(&quot;MyList&quot;);
+myList.ContentTypesEnabled = true;
+await myList.UpdateAsync();
+
+// Add existing content type (contact)
+var addedContentType = await myList.ContentTypes.AddAvailableContentTypeAsync(&quot;0x0106&quot;);
+
+// Now we should have two content types added to the list, let's check their order
+var contentTypeOrder = await myList.GetContentTypeOrderAsync();
+
+// turn around the order
+List&lt;string&gt; newContentTypeOrder = new List&lt;string&gt;();
+
+// First add the currently last content type
+newContentTypeOrder.Add(contentTypeOrder.Last());
+
+// Add the remaining content types
+foreach(var contentTypeId in contentTypeOrder)
+{
+    if (!newContentTypeOrder.Contains(contentTypeId))
+    {
+        newContentTypeOrder.Add(contentTypeId);
+    }
+}
+
+// Update the content type order of this list
+await myList.ReorderContentTypesAsync(newContentTypeOrder);
 </code></pre>
 <h2 id="updating-content-types">Updating content types</h2>
 <p>Updating a content type comes down to getting a reference to the content type to update, update the needed properties and call the UpdateAsync method.</p>
@@ -152,6 +200,44 @@ await contentType.UpdateAsync();
 // Adding a new field to the existing content type, mark it as required
 await contentType.FieldLinks.AddAsync(&quot;MyRequiredField&quot;, required: true);
 </code></pre>
+<h3 id="updating-site-content-type-field">Updating site content type field</h3>
+<p>To update the settings of a field added to a content type one can update its field link:</p>
+<pre><code class="lang-csharp">// Get site content types, also load the content types field links in one go
+await context.Web.LoadAsync(p =&gt; p.ContentTypes.QueryProperties(p =&gt; p.Name, p =&gt; p.Description,
+                                    p =&gt; p.FieldLinks.QueryProperties(p =&gt; p.Name, p =&gt; p.ReadOnly)));
+
+// Get the content type to update
+var contentType = context.Web.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+
+// Get the content type field link to update
+var fieldLink = await contentType.FieldLinks.AsRequested().First(p =&gt; p.Name == &quot;myField&quot;);
+
+// Set the field in the content type to be readonly
+fieldLink.ReadOnly = true;
+await fieldLink.UpdateAsync();
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>When you update a site content type field the changes are automatically pushed down the content types inheriting from the current content type.</p>
+</div>
+<h3 id="updating-a-list-content-type-field">Updating a list content type field</h3>
+<p>To update the settings of a field added to a content type one can update its field link:</p>
+<pre><code class="lang-csharp">// Add a list content type, start with getting a reference to the list
+var list = await context.Web.Lists.GetByTitleAsync(&quot;Documents&quot;, p =&gt; p.ContentTypes.QueryProperties(
+                                    p =&gt; p.Name, p =&gt; p.Description,
+                                    p =&gt; p.FieldLinks.QueryProperties(p =&gt; p.Name, p =&gt; p.ReadOnly)), 
+                                    p =&gt; p.Fields);
+
+// Get the content type to update
+var contentType = list.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+
+// Get the content type field link to update
+var fieldLink = await contentType.FieldLinks.AsRequested().First(p =&gt; p.Name == &quot;myField&quot;);
+
+// Set the field in the content type to be readonly
+fieldLink.ReadOnly = true;
+await fieldLink.UpdateAsync();
+</code></pre>
 <h2 id="deleting-content-types">Deleting content types</h2>
 <p>To delete a content type you need to get a reference to the content type to delete followed by calling one of the Delete methods.</p>
 <pre><code class="lang-csharp">await context.Web.LoadAsync(p =&gt; p.ContentTypes.QueryProperties(p =&gt; p.Name, p =&gt; p.Description,
@@ -164,6 +250,43 @@ var contentType = contentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &q
 // Delete the content type
 await contentType.DeleteAsync();
 </code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If a content type is in use you cannot delete it.</p>
+</div>
+<h3 id="removing-a-site-content-type-field">Removing a site content type field</h3>
+<p>To remove a field added to a content type one can remove its field link:</p>
+<pre><code class="lang-csharp">// Get site content types, also load the content types field links in one go
+await context.Web.LoadAsync(p =&gt; p.ContentTypes.QueryProperties(p =&gt; p.Name, p =&gt; p.Description,
+                                    p =&gt; p.FieldLinks.QueryProperties(p =&gt; p.Name, p =&gt; p.ReadOnly)));
+
+// Get the content type to update
+var contentType = context.Web.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+
+// Get the content type field link to remove
+var fieldLink = await contentType.FieldLinks.AsRequested().First(p =&gt; p.Name == &quot;myField&quot;);
+
+// Delete the field from the content type
+await fieldLink.DeleteAsync();
+</code></pre>
+<h3 id="removing-a-list-content-type-field">Removing a list content type field</h3>
+<p>To remove a field added to a content type one can remove its field link:</p>
+<pre><code class="lang-csharp">// Add a list content type, start with getting a reference to the list
+var list = await context.Web.Lists.GetByTitleAsync(&quot;Documents&quot;, p =&gt; p.ContentTypes.QueryProperties(
+                                    p =&gt; p.Name, p =&gt; p.Description,
+                                    p =&gt; p.FieldLinks.QueryProperties(p =&gt; p.Name, p =&gt; p.ReadOnly)), 
+                                    p =&gt; p.Fields);
+
+// Get the content type to update
+var contentType = list.ContentTypes.AsRequested().FirstOrDefault(p =&gt; p.Name == &quot;MyContentType&quot;);
+
+// Get the content type field link to delete
+var fieldLink = await contentType.FieldLinks.AsRequested().First(p =&gt; p.Name == &quot;myField&quot;);
+
+// Delete the field from the content type
+await fieldLink.DeleteAsync();
+</code></pre>
+
 </article>
           </div>
           <div class="hidden-sm col-md-2" role="complementary">
@@ -173,7 +296,7 @@ await contentType.DeleteAsync();
             </div>
           </div>        </div>
       </div>
-      
+
       <footer>
         <div class="grad-bottom"></div>
         <div class="footer">
@@ -181,14 +304,14 @@ await contentType.DeleteAsync();
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
-            
-            <img src="https://telemetry.sharepointpnp.com/@pnp.github.io/index/" alt="spacer">
+      <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
+      
+            <img src="https://m365-visitor-stats.azurewebsites.net/pnpcoresdk/docs" alt="spacer">
           </div>
         </div>
       </footer>    </div>
-    
-    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>  </body>
 </html>

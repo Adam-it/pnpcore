@@ -1,29 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html lang="en">
-  
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Configuring authentication | PnP Core SDK </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Configuring authentication | PnP Core SDK ">
-    <meta name="generator" content="docfx 2.56.5.0">
-    <meta name="description" content="The PnP Core SDK is an SDK designed to work against Microsoft 365. Its aim is to provide a unified object model to work with the whole Microsoft 365 ecosystem. ">
+    <meta name="generator" content="docfx ">
+  <meta name="description" content="The PnP Core SDK is a modern .NET SDK designed to work for Microsoft 365. It provides a unified object model for working with SharePoint Online and Teams which is agnostic to the underlying API&#39;s being called.">
     <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
-    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
     <link rel="stylesheet" href="../styles/docfx.css">
     <link rel="stylesheet" href="../styles/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    <meta property="docfx:newtab" content="true">
+  
+  <meta property="docfx:rel" content="../">
+  <meta property="docfx:newtab" content="true">
   </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../images/logo.svg" alt="">
               </a>
@@ -47,7 +47,7 @@
               </form>
             </div>
           </div>
-        </nav>        
+        </nav>
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -57,17 +57,17 @@
         </div>
       </header>
       <div class="container body-content">
-        
+
         <div id="search-results">
           <div class="search-list">Search Results for <span></span></div>
           <div class="sr-items">
             <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
           </div>
-          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
         </div>
       </div>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -77,36 +77,32 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
+                
                   <div class="contribution-panel mobile-hide pull-right">
-                      <a href="https://github.com/pnp/pnpcore/blob/dev/docs/using-the-sdk/configuring authentication.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                      <a href="https://github.com/Adam-it/pnpcore/blob/dev/docs/using-the-sdk/configuring authentication.md/#L1" title="Edit this page" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
                   </div>
-                    <h1 id="configuring-authentication">Configuring authentication</h1>
+  <h1 id="configuring-authentication">Configuring authentication</h1>
 
 <p>The PnP Core SDK works with both SharePoint REST as Microsoft Graph in a transparent way, this also means that the authentication model used must work for both. The chosen authentication model is Azure Active Directory (a.k.a. Azure AD), using Azure Active Directory you can define an application and grant it permissions to access Microsoft 365 workloads like SharePoint, Teams,...<strong>Configuring your own application is the recommended approach</strong>, but you can also use a multi-tenant application that the PnP team created. Both options are detailed in the next chapters</p>
 <h2 id="i-want-to-configure-my-own-azure-ad-application-recommended">I want to configure my own Azure AD application (recommended)</h2>
+<p>When configuring your Azure AD application you'll need to also defined which delegated and/or application permissions your application needs. <strong>It's recommended to use the minimal permissions needed for the application at hand</strong>, for example if your app is not using the managed metadata features of the SDK, then there's no need to request TermStore permissions. In below setup instructions we assume your app wants to use the main features of PnP Core SDK, but the list of shown permissions can be to narrow or to wide depending on your actual application needs. When you want to experiment with the needed permissions then this will be the easiest on a tenant you're admin of, for example a <a href="https://developer.microsoft.com/en-us/microsoft-365/dev-program">free Microsoft 365 developer tenant</a> is ideal for developing and testing.</p>
 <h3 id="delegated-permissions-acting-in-the-name-of-the-user">Delegated Permissions (acting in the name of the user)</h3>
 <p>In this section you can learn how to register an application in Azure Active Directory and how to use it in your .NET code, in order to use the PnP Core SDK with interactive login in a Console application, running your requests in the name of the authenticated user.</p>
 <h4 id="configuring-the-application-in-azure-ad">Configuring the application in Azure AD</h4>
 <p>In this step by step guide you will register an application in Azure Active Directory, in order to consume the PnP Core SDK in the name of the user connected to your app (i.e. with a delegated access token) from within a .NET Core Console application.
 Follow below steps to configure an application in Azure AD:</p>
 <ol>
-<li><p>Navigate to <a href="https://aad.portal.azure.com/">https://aad.portal.azure.com/</a></p>
-</li>
-<li><p>Click on <strong>Azure Active Directory</strong> from the left navigation</p>
-</li>
-<li><p>Click on <strong>App registrations</strong> in the <strong>Manage</strong> left navigation group</p>
-</li>
-<li><p>Click on <strong>New registration</strong></p>
-</li>
-<li><p>Give the application a name (e.g. PnP Core SDK) and click on <strong>Register</strong></p>
-</li>
-<li><p>Copy the <strong>Application ID</strong> (Client ID) from the <strong>Overview</strong> page, you'll need this GUID value later on</p>
-</li>
-<li><p>Copy the <strong>Directory ID</strong> (Tenant ID) from the <strong>Overview</strong> page, you'll need this GUID value later on</p>
-</li>
-<li><p>Click on the <strong>API Permissions</strong> in the <strong>Manage</strong> left navigation group</p>
-</li>
-<li><p>Click on <strong>Add Permissions</strong> and add the permissions you want to give to this application. Below list is a recommendation, you can grant less permissions but that might result in some PnP Core SDK calls to fail due getting access denied errors.</p>
+<li>Navigate to <a href="https://entra.microsoft.com">https://entra.microsoft.com</a></li>
+<li>Click on <strong>Identity</strong> from the left navigation</li>
+<li>Click on <strong>Applications</strong> from the left navigation</li>
+<li>Click on <strong>App registrations</strong> in the <strong>Manage</strong> left navigation group</li>
+<li>Click on <strong>New registration</strong></li>
+<li>Give the application a name (e.g. PnP Core SDK) and click on <strong>Register</strong></li>
+<li>Copy the <strong>Application ID</strong> (Client ID) from the <strong>Overview</strong> page, you'll need this GUID value later on</li>
+<li>Copy the <strong>Directory ID</strong> (Tenant ID) from the <strong>Overview</strong> page, you'll need this GUID value later on</li>
+<li>Click on the <strong>API Permissions</strong> in the <strong>Manage</strong> left navigation group</li>
+<li>Click on <strong>Add Permissions</strong> and add the permissions you want to give to this application. Below list is a recommendation, you can grant less permissions but that might result in some PnP Core SDK calls to fail due getting access denied errors.</li>
+</ol>
 <ul>
 <li>SharePoint -&gt; Delegated Permissions -&gt; AllSites -&gt; AllSites.FullControl</li>
 <li>SharePoint -&gt; Delegated Permissions -&gt; Sites -&gt; Sites.Search.All</li>
@@ -117,18 +113,19 @@ Follow below steps to configure an application in Azure AD:</p>
 <li>Microsoft Graph -&gt; Delegated Permissions -&gt; Directory -&gt; Directory.AccessAsUser.All</li>
 <li>Microsoft Graph -&gt; Delegated Permissions -&gt; Group -&gt; Group.ReadWrite.All</li>
 </ul>
-</li>
-<li><p>Click on the <strong>Grant admin consent for</strong> button to consent to these permissions for the users in your organization</p>
-</li>
-<li><p>Click on <strong>Authentication</strong> in the <strong>Manage</strong> left navigation group</p>
-</li>
-<li><p>Change <strong>Default client type</strong> to <strong>Treat application as public client</strong> and hit <strong>Save</strong> (this step is optional and you should do that if and only if you are planning to use the <code>UsernamePasswordAuthenticationProvider</code> or the <code>CredentialManagerAuthenticationProvider</code> for authentication)</p>
-</li>
+<ol start="11">
+<li>Click on the <strong>Grant admin consent for</strong> button to consent to these permissions for the users in your organization</li>
+<li>Click on <strong>Authentication</strong> in the <strong>Manage</strong> left navigation group</li>
+<li>Change <strong>Default client type</strong> to <strong>Treat application as public client</strong> and hit <strong>Save</strong> (this step is optional and you should do that if and only if you are planning to use the <code>UsernamePasswordAuthenticationProvider</code> or the <code>CredentialManagerAuthenticationProvider</code> for authentication)</li>
 </ol>
 <p>If you want to configure support for interactive login you should also configure the <em>Platform</em> and the <em>redirect URI</em> in the <strong>Authentication</strong> panel. You can read <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri">further details here</a>.</p>
 <ol start="13">
 <li>Click on <strong>Authentication</strong> and then click on <strong>Add a platform</strong>, choose <strong>Mobile and desktop applications</strong> and provide http://localhost as the <strong>Redirect URI</strong></li>
 </ol>
+<div class="NOTE">
+<h5>Note</h5>
+<p>It's recommended to align the actually required permissions with the needs of your application.</p>
+</div>
 <h4 id="configuring-pnp-core-sdk-to-use-the-configured-application">Configuring PnP Core SDK to use the configured application</h4>
 <p>When you're configuring your application to use the PnP Core SDK you will have to configure the <code>PnP.Core</code> services and the <code>PnP.Core.Auth</code> services using the <code>AddPnPCore</code> and <code>AddPnPCoreAuthentication</code> methods, respectively. The <code>ClientId</code> and <code>TenantId</code> are those of the application that you just registered in Azure Active Directory. The value for the <code>CredentialManagerName</code> property is the name of the item stored in the Windows Credential Manager.</p>
 <pre><code class="lang-csharp">// Add the PnP Core SDK library
@@ -151,7 +148,7 @@ services.AddPnPCoreAuthentication(
                 TenantId = &quot;{your_tenant_id}&quot;,
                 Interactive = new PnPCoreAuthenticationInteractiveOptions
                 {
-                    RedirectUri = &quot;http://localhost&quot;
+                    RedirectUri = new Uri(&quot;http://localhost&quot;)
                 }
             });
 
@@ -171,8 +168,15 @@ services.AddPnPCoreAuthentication(
 <p>In this section you can learn how to register an application in Azure Active Directory and how to use it in your .NET code, in order to use the PnP Core SDK within a background job/service/function, running your requests with an app account.</p>
 <h4 id="configuring-the-application-in-azure-ad-1">Configuring the application in Azure AD</h4>
 <p>The easiest way to register an application in Azure Active Directory for app-only is to use the <a href="https://docs.microsoft.com/en-us/powershell/sharepoint/sharepoint-pnp/sharepoint-pnp-cmdlets?view=sharepoint-ps">PnP PowerShell</a> cmdlets. Specifically you can use the <a href="https://docs.microsoft.com/en-us/powershell/module/sharepoint-pnp/register-pnpazureadapp?view=sharepoint-ps"><code>Register-PnPAzureADApp</code> command</a> with the following syntax:</p>
-<pre><code class="lang-powershell">$app = Register-PnPAzureADApp -ApplicationName &quot;PnP.Core.SDK.Consumer&quot; -Tenant contoso.onmicrosoft.com -OutPath c:\temp -CertificatePassword (ConvertTo-SecureString -String &quot;password&quot; -AsPlainText -Force) -Scopes &quot;MSGraph.Group.ReadWrite.All&quot;,&quot;MSGraph.User.ReadWrite.All&quot;,&quot;SPO.Sites.FullControl.All&quot;,&quot;SPO.TermStore.ReadWrite.All&quot;,&quot;SPO.User.ReadWrite.All&quot; -Store CurrentUser
+<pre><code class="lang-powershell">$app = Register-PnPAzureADApp -ApplicationName &quot;PnP.Core.SDK.Consumer&quot; -Tenant contoso.onmicrosoft.com -OutPath c:\temp -CertificatePassword (ConvertTo-SecureString -String &quot;password&quot; -AsPlainText -Force) -Scopes &quot;MSGraph.Group.ReadWrite.All&quot;,&quot;MSGraph.User.ReadWrite.All&quot;,&quot;SPO.Sites.FullControl.All&quot;,&quot;SPO.TermStore.ReadWrite.All&quot;,&quot;SPO.User.ReadWrite.All&quot; -Store CurrentUser -Interactive
 </code></pre>
+<p>With SharePoint PnP PowerShell Online cmdlets version 3.29.2101.0 and higher.</p>
+<pre><code class="lang-powershell">$app = Register-PnPAzureADApp -Interactive -ApplicationName &quot;PnP.Core.SDK.Consumer&quot; -Tenant contoso.onmicrosoft.com -OutPath d:\temp -CertificatePassword (ConvertTo-SecureString -String &quot;password&quot; -AsPlainText -Force) -GraphApplicationPermissions &quot;Group.ReadWrite.All, User.ReadWrite.All&quot; -SharePointApplicationPermissions &quot;Sites.FullControl.All, TermStore.ReadWrite.All, User.ReadWrite.All&quot; -Store CurrentUser
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>It's recommended to align the actually required permissions with the needs of your application.</p>
+</div>
 <p>The above command will register for you in Azure Active Directory an app with name <code>PnP.Core.SDK.Consumer</code>, with a self-signed certificate that will be also saved on your filesystem under the <code>c:\temp</code> folder (remember to create the folder or to provide the path of an already existing folder), with a certificate password value of <code>password</code> (you should provide your own strong password, indeed). Remember to replace <code>contoso.onmicrosoft.com</code> with your Azure AD tenant name, which typically is <code>company.onmicrosoft.com</code>. The permissions granted to the app will be:</p>
 <ul>
 <li>SharePoint -&gt; Application Permissions -&gt; Sites -&gt; Sites.FullControl.All</li>
@@ -192,6 +196,10 @@ services.AddPnPCoreAuthentication(
 </code></pre>
 <p>Paste this copied values in a safe place, because you will need them soon.
 In the <code>c:\temp</code> folder (or whatever else folder you will choose) there will also be a file named <code>PnP.Core.SDK.Consumer.pfx</code>, which includes the private key of the self-signed certificate generated for you, as well as a file named <code>PnP.Core.SDK.Consumer.cer</code>, which includes the public key of the self-signed certificate generated for you.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If you can't use PowerShell to generate a self-signed certificate then checkout <a href="https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide">Generate self-signed certificates with the .NET CLI</a>. It for example shows how to use OpenSSL on Linux to create a self-signed certificate.</p>
+</div>
 <h4 id="configuring-pnp-core-sdk-to-use-the-configured-application-1">Configuring PnP Core SDK to use the configured application</h4>
 <p>When you're configuring your application to use the PnP Core SDK you will have to configure the <code>PnP.Core</code> services and the <code>PnP.Core.Auth</code> services using the <code>AddPnPCore</code> and <code>AddPnPCoreAuthentication</code> methods, respectively. The <code>ClientId</code> and <code>TenantId</code> are those of the application that you just registered in Azure Active Directory..</p>
 <pre><code class="lang-csharp">// Add the PnP Core SDK library
@@ -232,13 +240,16 @@ services.AddPnPCoreAuthentication(
             });
 });
 </code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If you're using PnP Core SDK on Linux you can use <a href="https://github.com/gsoft-inc/dotnet-certificate-tool">https://github.com/gsoft-inc/dotnet-certificate-tool</a> as tool to import your certificate.</p>
+</div>
 <h2 id="using-the-multi-tenant-pnp-azure-ad-application">Using the multi-tenant PnP Azure AD application</h2>
 <p>Azure AD has the concept of multi-tenant applications allowing you to re-use an application created in another Azure AD tenant. The PnP team did setup a general purpose Azure AD application (named &quot;PnP Office 365 Management Shell&quot;) configured with the needed permissions, and you can reuse this application. It means that you don't need to create your own Azure AD application, instead you simply need to consent permissions to the already created multi-tenant application.</p>
-<h3 id="step-1">Step 1</h3>
+<h3 id="step-1-consent-to-the-pnp-office-365-management-shell-application">Step 1: Consent to the PnP Office 365 Management Shell application</h3>
 <p>To consent permissions to the PnP multi-tenant application first update below content URL: replace contoso.onmicrosoft.com with your Azure AD tenant name, which typically is company.onmicrosoft.com.</p>
 <pre><code>https://login.microsoftonline.com/contoso.onmicrosoft.com/adminconsent?client_id=31359c7f-bd7e-475c-86db-fdb8c937548e&amp;state=12345&amp;redirect_uri=https://aka.ms/sppnp
 </code></pre>
-<h3 id="step-2">Step 2</h3>
 <p>Login to your Microsoft 365 tenant (e.g. by browsing to SharePoint Online), open a new browser tab and paste the URL you've just created. Azure AD will eventually ask you to login, and then it will prompt you to consent permissions to the app:</p>
 <p><img src="../images/PnP%20admin%20consent.png" alt="PnP Multi-tenant app admin consent"></p>
 <p>Click on <strong>Accept</strong> to accept the requested permissions. At that point you will be redirected to the PnP Site (<a href="https://aka.ms/sppnp">https://aka.ms/sppnp</a>). You've now successfully registered the PnP multi-tenant application in your Azure AD environment and you can use it with the PnP Core SDK. The PnP Core SDK defaults to this application, so if you're not specifying any Azure AD application details when setting up authentication for the application, then the PnP Core SDK automatically uses the PnP application (application id 31359c7f-bd7e-475c-86db-fdb8c937548e).</p>
@@ -246,6 +257,49 @@ services.AddPnPCoreAuthentication(
 <h5>Note</h5>
 <p>If you get errors during this consent process it's most likely because you are not an Azure AD tenant administrator. Please contact your admins and check with them for further steps.</p>
 </div>
+<h3 id="step-2-configure-your-project-authentication-settings">Step 2: Configure your project authentication settings</h3>
+<p>If you're using the PnP Management Shell Azure AD application then you can leave out the application id and tenant id from your authentication setup. Below samples show how to use the <code>InteractiveAuthenticationProvider</code> in combination with the PnP Management Shell Azure AD application. Using code you can configure authentication like this:</p>
+<pre><code class="lang-csharp">var host = 
+    Host.CreateDefaultBuilder()                
+        // Configure logging
+        .ConfigureLogging((hostingContext, logging) =&gt;
+        {
+            logging.AddEventSourceLogger();
+            logging.AddConsole();
+        })
+        .ConfigureServices((hostingContext, services) =&gt;
+        {                
+            // Add the PnP Core SDK library services
+            services.AddPnPCore();
+            // Add the PnP Core SDK library services configuration from the appsettings.json file
+            services.Configure&lt;PnPCoreOptions&gt;(hostingContext.Configuration.GetSection(&quot;PnPCore&quot;));
+            // Add the PnP Core SDK Authentication Providers
+            services.AddPnPCoreAuthentication(options =&gt;
+            {
+                options.Credentials.Configurations.Add(&quot;Default&quot;, new PnPCoreAuthenticationCredentialConfigurationOptions
+                {
+                    Interactive = new PnPCoreAuthenticationInteractiveOptions { },
+                });
+                options.Credentials.DefaultConfiguration = &quot;Default&quot;;
+            });
+        })
+        // Let the builder know we're running in a console
+        .UseConsoleLifetime()
+        // Add services to the container
+        .Build();
+</code></pre>
+<p>This snippet show the JSON authentication section to use:</p>
+<pre><code class="lang-json">&quot;Credentials&quot;: {
+    &quot;DefaultConfiguration&quot;: &quot;myAuthConfig&quot;,
+        &quot;Configurations&quot;: {
+            &quot;myAuthConfig&quot;: {
+                &quot;Interactive&quot;: {
+                &quot;RedirectUri&quot;: &quot;http://localhost&quot;
+                }
+            }
+    }
+}
+</code></pre>
 <h2 id="using-the-credential-manager">Using the credential manager</h2>
 <p>Another supported option to authenticate to a created Azure AD application, configured for delegated permissions, is via username and password, through the <code>UsernamePasswordAuthenticationProvider</code>. To configure this in a secure way it's recommended to setup a credential manager entry and to use the <code>CredentialManagerAuthenticationProvider</code>. Below steps walk you through the setup on Windows, but a similar credential manager concepts exists on other platforms as well.</p>
 <ol>
@@ -255,6 +309,7 @@ services.AddPnPCoreAuthentication(
 <li>Give the credential a name (e.g. Contoso), a user name (e.g. joe@contoso.onmicrosoft.com) and a password. Hit <strong>OK</strong> to save.</li>
 <li>Use the credential manager name (Contoso in this example) in the settings of the <code>CredentialManagerAuthenticationProvider</code> provider.</li>
 </ol>
+
 </article>
           </div>
           <div class="hidden-sm col-md-2" role="complementary">
@@ -264,7 +319,7 @@ services.AddPnPCoreAuthentication(
             </div>
           </div>        </div>
       </div>
-      
+
       <footer>
         <div class="grad-bottom"></div>
         <div class="footer">
@@ -272,14 +327,14 @@ services.AddPnPCoreAuthentication(
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
-            
-            <img src="https://telemetry.sharepointpnp.com/@pnp.github.io/index/" alt="spacer">
+      <span>PnP Core SDK<br>Generated by <strong><a href='https://dotnet.github.io/docfx' alt='Doc FX Website'>DocFX</a></strong> with <strong><a href='https://ovasquez.github.io/docfx-material' alt='DocFx Material Theme'>Material UI</a></strong></span>
+      
+            <img src="https://m365-visitor-stats.azurewebsites.net/pnpcoresdk/docs" alt="spacer">
           </div>
         </div>
       </footer>    </div>
-    
-    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>  </body>
 </html>
